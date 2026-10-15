@@ -15,7 +15,7 @@ import { MobileViewSwitcher, MobileViewMode } from './components/MobileViewSwitc
 import { MobileDeviceFrame } from './components/MobileDeviceFrame';
 import { LoginScreen } from './components/LoginScreen';
 import { DashboardData, DashboardFilters } from './types';
-import { Loader2, AlertTriangle, RefreshCw, CheckCircle2, Download, X, Printer } from 'lucide-react';
+import { Loader2, AlertTriangle, RefreshCw, CheckCircle2, Download, X } from 'lucide-react';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -166,10 +166,6 @@ export default function App() {
     }
   };
 
-  const handleNativePrint = () => {
-    window.print();
-  };
-
   // Cross-filter handlers
   const handleUpdateFilters = (newFilters: DashboardFilters) => {
     setFilters(newFilters);
@@ -277,7 +273,6 @@ export default function App() {
         onOpenInspectorModal={() => setIsInspectorOpen(true)}
         onExportPdf={handleOpenPdfModal}
         isExportingPdf={isExportingPdf}
-        onNativePrint={handleNativePrint}
         onLogout={handleLogout}
       />
 
@@ -291,7 +286,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <main className={isExportingPdf ? "flex-1 w-full mx-auto px-0 py-0 overflow-x-auto flex flex-col items-center" : "flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 py-6 space-y-6"}>
         {/* PDF Success Toast */}
         {pdfSuccessMessage && (
           <div className="bg-emerald-50 border-2 border-emerald-500/80 rounded-2xl p-4 text-emerald-950 flex items-center justify-between shadow-lg">
@@ -478,14 +473,25 @@ export default function App() {
 
             {/* Mode 0 (Desktop Layout, Always Active for PDF Export) */}
             {(mobileMode === 'desktop' || isExportingPdf) && (
-              <div id="pdf-export-container" className={isExportingPdf ? "space-y-6 bg-white p-0 m-0 border-0 shadow-none rounded-none outline-none" : "space-y-6 bg-slate-50/50 p-2 sm:p-4 rounded-2xl"}>
+              <div
+                id="pdf-export-container"
+                className={
+                  isExportingPdf
+                    ? "w-[1440px] min-w-[1440px] max-w-[1440px] space-y-6 bg-white p-0 m-0 border-0 shadow-none rounded-none outline-none overflow-visible"
+                    : "space-y-6 bg-slate-50/50 p-2 sm:p-4 rounded-2xl"
+                }
+                style={isExportingPdf ? { width: '1440px', minWidth: '1440px', maxWidth: '1440px' } : undefined}
+              >
                 {isExportingPdf ? (
                   <>
                     {/* ========================================================================= */}
                     {/* АРКУШ 1: Загальний огляд (KPIs + Динаміка по місяцях + Географія фідбеку) */}
                     {/* ========================================================================= */}
                     {(pdfExportOptions.includeKpiSummary || pdfExportOptions.includeMonthlyTrends || pdfExportOptions.includeRegionalDemographics) && (
-                      <div className="pdf-export-page space-y-4 bg-white p-2 border-0 shadow-none rounded-none outline-none">
+                      <div
+                        className="pdf-export-page space-y-4 bg-white p-2 border-0 shadow-none rounded-none outline-none w-[1440px] min-w-[1440px] max-w-[1440px]"
+                        style={{ width: '1440px', minWidth: '1440px', maxWidth: '1440px' }}
+                      >
                         {/* Header Banner for PDF Export */}
                         {(() => {
                           const activeFilterList: { label: string; value: string }[] = [];
@@ -608,7 +614,10 @@ export default function App() {
                     {/* АРКУШ 2: Нові сигнали за останні 30 днів + Зростаючі/спадаючі тренди       */}
                     {/* ========================================================================= */}
                     {pdfExportOptions.includeSignalsAndTrends && (
-                      <div className="pdf-export-page bg-white p-2 border-0 shadow-none rounded-none outline-none">
+                      <div
+                        className="pdf-export-page bg-white p-2 border-0 shadow-none rounded-none outline-none w-[1440px] min-w-[1440px] max-w-[1440px]"
+                        style={{ width: '1440px', minWidth: '1440px', maxWidth: '1440px' }}
+                      >
                         <SignalsSection
                           newSignals={data.newSignals}
                           growingIssues={data.growingIssues}

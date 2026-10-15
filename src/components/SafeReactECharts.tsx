@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, forwardRef } from 'react';
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import ReactECharts from 'echarts-for-react';
 
 export interface SafeReactEChartsProps {
@@ -21,7 +21,10 @@ export interface SafeReactEChartsProps {
 
 export const SafeReactECharts = forwardRef<any, SafeReactEChartsProps>(({ isPdfExportMode, className, ...echartsProps }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<any>(null);
   const [isReady, setIsReady] = useState(false);
+
+  useImperativeHandle(ref, () => chartRef.current);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -47,10 +50,30 @@ export const SafeReactECharts = forwardRef<any, SafeReactEChartsProps>(({ isPdfE
     }
   }, [isPdfExportMode]);
 
+  useEffect(() => {
+    if (isPdfExportMode) {
+      const triggerResize = () => {
+        if (chartRef.current) {
+          const eInstance = chartRef.current.getEchartsInstance?.();
+          if (eInstance && typeof eInstance.resize === 'function') {
+            eInstance.resize();
+          }
+        }
+      };
+
+      const t1 = setTimeout(triggerResize, 100);
+      const t2 = setTimeout(triggerResize, 350);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [isPdfExportMode, echartsProps.option]);
+
   return (
-    <div ref={containerRef} className={`w-full h-full min-h-[1px] ${className || ''}`}>
+    <div ref={containerRef} className={`w-full h-full min-h-[1px] relative ${className || ''}`}>
       {isReady || isPdfExportMode ? (
-        <ReactECharts ref={ref} {...echartsProps} />
+        <ReactECharts ref={chartRef} {...echartsProps} />
       ) : null}
     </div>
   );

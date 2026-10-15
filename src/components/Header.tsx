@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshCw, Database, Filter, X, Sparkles, ShieldCheck, FileText, Loader2, Printer, TrendingUp, LogOut } from 'lucide-react';
+import { RefreshCw, Database, Filter, X, Sparkles, ShieldCheck, FileText, Loader2, LogOut } from 'lucide-react';
 import { DashboardFilters, DashboardData } from '../types';
 
 interface HeaderProps {
@@ -14,7 +14,6 @@ interface HeaderProps {
   onOpenInspectorModal: () => void;
   onExportPdf?: () => void;
   isExportingPdf?: boolean;
-  onNativePrint?: () => void;
   onLogout?: () => void;
 }
 
@@ -30,7 +29,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenInspectorModal,
   onExportPdf,
   isExportingPdf = false,
-  onNativePrint,
   onLogout
 }) => {
   // Check active filter count
@@ -213,7 +211,7 @@ export const Header: React.FC<HeaderProps> = ({
             <span>База коментарів</span>
           </button>
 
-          {/* Export Actions: PDF & Print */}
+          {/* Export Actions: PDF */}
           <div className="flex items-center gap-2">
             {/* Export to PDF Button */}
             {onExportPdf && (
@@ -231,19 +229,6 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
                 <span className="hidden xl:inline">Експорт в PDF</span>
                 <span className="xl:hidden">.PDF</span>
-              </button>
-            )}
-
-            {/* Direct Vector Print Dialog */}
-            {onNativePrint && (
-              <button
-                type="button"
-                onClick={onNativePrint}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/90 hover:bg-white text-slate-800 font-extrabold text-xs shadow-2xs transition-all cursor-pointer border border-blue-200/90"
-                title="Відкрити системний друк / Зберегти як векторний PDF через браузер (Ctrl+P)"
-              >
-                <Printer className="w-3.5 h-3.5 text-slate-600" />
-                <span className="hidden 2xl:inline">Друк</span>
               </button>
             )}
 

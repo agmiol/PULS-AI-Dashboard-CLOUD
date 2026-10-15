@@ -433,8 +433,8 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
         {safeChunks.map((chunkIssues, chunkIdx) => (
           <div
             key={`pdf-catalog-chunk-${chunkIdx}`}
-            className="pdf-export-page bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5"
-            style={{ width: '1200px', maxWidth: '1200px', boxSizing: 'border-box' }}
+            className="pdf-export-page bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 w-[1440px] min-w-[1440px] max-w-[1440px]"
+            style={{ width: '1440px', minWidth: '1440px', maxWidth: '1440px', boxSizing: 'border-box' }}
           >
             {/* Section Header Banner for Chunk (Web-style light header) */}
             <div className="pdf-item-card flex items-center justify-between border-b pb-3.5 border-slate-200">
@@ -923,7 +923,7 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
       {effectiveActiveTab === 'general' && (
         <div className="space-y-4">
           {/* 📱 Mobile / Compact Card View with Accordion Expansion */}
-          <div className={forceMobileLayout ? "block space-y-3" : "block lg:hidden space-y-3"}>
+          <div className={isPdfExportMode ? "hidden" : forceMobileLayout ? "block space-y-3" : "block lg:hidden space-y-3"}>
             {pagedGeneral.length === 0 ? (
               <div className="py-8 text-center text-slate-400 font-medium text-xs">
                 За вказаним пошуковим запитом «{searchQuery}» проблем не знайдено
@@ -1235,7 +1235,7 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
           </div>
 
           {/* 💻 Desktop Table View */}
-          <div className={forceMobileLayout ? "hidden" : "hidden lg:block overflow-x-auto rounded-xl border border-slate-200/90 print:border-slate-300"}>
+          <div className={isPdfExportMode ? "block overflow-x-auto rounded-xl border border-slate-200/90 print:border-slate-300" : forceMobileLayout ? "hidden" : "hidden lg:block overflow-x-auto rounded-xl border border-slate-200/90 print:border-slate-300"}>
             <table className="w-full text-left text-xs text-slate-700 border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-100/90 text-slate-600 text-[10px] uppercase font-extrabold tracking-wider print:bg-slate-200 print:text-slate-900">
@@ -1401,7 +1401,7 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
                                     {matchingChildren.map((child) => (
                                       <div
                                         key={child.detailedIssueId}
-                                        className="flex flex-col lg:flex-row lg:items-center justify-between p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-400 hover:shadow-xs transition-all gap-3 print:border-slate-300 print:shadow-none print:break-inside-avoid"
+                                        className={isPdfExportMode ? "flex flex-row items-center justify-between p-3 rounded-xl bg-white border border-slate-200 gap-3" : "flex flex-col lg:flex-row lg:items-center justify-between p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-400 hover:shadow-xs transition-all gap-3 print:border-slate-300 print:shadow-none print:break-inside-avoid"}
                                       >
                                         <div className="flex items-start gap-2.5 flex-1">
                                           <span className="font-mono text-[11px] font-bold text-slate-400 mt-0.5 shrink-0 print:text-slate-700">
@@ -1425,7 +1425,7 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
                                           </div>
                                         </div>
 
-                                        <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0 border-t lg:border-t-0 pt-2 lg:pt-0 border-slate-100">
+                                        <div className={isPdfExportMode ? "flex items-center justify-end gap-4 shrink-0 border-t-0 pt-0" : "flex items-center justify-between lg:justify-end gap-4 shrink-0 border-t lg:border-t-0 pt-2 lg:pt-0 border-slate-100"}>
                                           {/* Trend Direction Badge */}
                                           <div className="flex flex-col items-end gap-1">
                                             <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight border ${
@@ -1534,7 +1534,7 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
       {activeTab === 'detailed' && (
         <div className="space-y-4">
           {/* 📱 Mobile Accordion Card View */}
-          <div className={forceMobileLayout ? "block space-y-3" : "block lg:hidden space-y-3"}>
+          <div className={isPdfExportMode ? "hidden" : forceMobileLayout ? "block space-y-3" : "block lg:hidden space-y-3"}>
             {pagedDetailed.length === 0 ? (
               <div className="py-8 text-center text-slate-400 font-medium text-xs">
                 За вказаним пошуковим запитом «{searchQuery}» сигналів не знайдено
@@ -1687,7 +1687,7 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
           </div>
 
           {/* 💻 Desktop Table View */}
-          <div className={forceMobileLayout ? "hidden" : "hidden lg:block overflow-x-auto rounded-xl border border-slate-200/90"}>
+          <div className={isPdfExportMode ? "block overflow-x-auto rounded-xl border border-slate-200/90" : forceMobileLayout ? "hidden" : "hidden lg:block overflow-x-auto rounded-xl border border-slate-200/90"}>
             <table className="w-full text-left text-xs text-slate-700 border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-100/90 text-slate-600 text-[10px] uppercase font-extrabold tracking-wider">

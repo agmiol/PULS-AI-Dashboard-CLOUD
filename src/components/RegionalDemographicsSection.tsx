@@ -409,7 +409,7 @@ export const RegionalDemographicsSection: React.FC<RegionalDemographicsSectionPr
       {/* 💻 Desktop View: Full 12-Column Grid */}
       <div className={isPdfExportMode ? "grid grid-cols-12 gap-6" : forceMobileLayout ? "hidden" : "hidden lg:grid lg:grid-cols-12 gap-6"}>
         {/* Chart 117: Ukraine Map (Expanded to 8 Columns) */}
-        <div className="lg:col-span-8 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between">
+        <div className={isPdfExportMode ? "col-span-8 bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm flex flex-col justify-between" : "lg:col-span-8 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between"}>
           <div>
             <div className="flex items-center justify-between mb-2 border-b border-slate-100 pb-2">
               <div>
@@ -458,7 +458,7 @@ export const RegionalDemographicsSection: React.FC<RegionalDemographicsSectionPr
               <span>Топ-5 регіонів за активністю:</span>
               <span className="text-[10px] text-slate-400 font-medium normal-case">Клікніть для вибору або додавання регіону</span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+            <div className={isPdfExportMode ? "grid grid-cols-5 gap-2.5" : "grid grid-cols-2 sm:grid-cols-5 gap-2.5"}>
               {sortedRegions.map((reg) => {
                 const isSelected = Boolean(
                   selectedRegion &&
@@ -512,7 +512,7 @@ export const RegionalDemographicsSection: React.FC<RegionalDemographicsSectionPr
         </div>
 
         {/* Stacked Right Column: Monthly Comments & Legal Form Breakdown (4 Columns) */}
-        <div className="lg:col-span-4 flex flex-col gap-6 justify-between">
+        <div className={isPdfExportMode ? "col-span-4 flex flex-col gap-6 justify-between" : "lg:col-span-4 flex flex-col gap-6 justify-between"}>
           {/* Chart 118: Monthly Comments Volume */}
           <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col justify-between flex-1">
             <div>
@@ -535,10 +535,10 @@ export const RegionalDemographicsSection: React.FC<RegionalDemographicsSectionPr
                 </div>
               </div>
             </div>
-            <div className="w-full h-[220px]">
+            <div className="w-full h-[220px] min-h-[220px] relative">
               <ReactECharts
                 option={chart118Option}
-                style={{ height: '100%', width: '100%' }}
+                style={{ height: '220px', width: '100%' }}
                 onEvents={{ click: handleBarClick }}
                 isPdfExportMode={isPdfExportMode}
               />
@@ -564,10 +564,10 @@ export const RegionalDemographicsSection: React.FC<RegionalDemographicsSectionPr
                 </p>
               </div>
             </div>
-            <div className="w-full h-[220px]">
+            <div className="w-full h-[220px] min-h-[220px] relative">
               <ReactECharts
                 option={chart119Option}
-                style={{ height: '100%', width: '100%' }}
+                style={{ height: '220px', width: '100%' }}
                 onEvents={{ click: handlePieClick }}
                 isPdfExportMode={isPdfExportMode}
               />

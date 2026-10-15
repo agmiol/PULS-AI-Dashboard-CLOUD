@@ -32,9 +32,13 @@ export const TopKpiSection: React.FC<TopKpiSectionProps> = ({
 
   // Gauge ECharts option matching Superset slice 104 gauge_chart
   const gaugeOption = {
+    animation: false,
+    animationDuration: 0,
     series: [
       {
         type: 'gauge',
+        animation: false,
+        animationDuration: 0,
         center: ['50%', '62%'],
         radius: '85%',
         startAngle: 225,
@@ -382,7 +386,7 @@ export const TopKpiSection: React.FC<TopKpiSectionProps> = ({
       </div>
 
       {/* 💻 DESKTOP VIEW (Full 6-column grid matching Superset layout) */}
-      <div className={isPdfExportMode ? "grid grid-cols-2 lg:grid-cols-6 gap-6" : forceMobileLayout ? "hidden" : "hidden md:grid md:grid-cols-2 lg:grid-cols-6 gap-6"}>
+      <div className={isPdfExportMode ? "grid grid-cols-6 gap-6" : forceMobileLayout ? "hidden" : "hidden md:grid md:grid-cols-2 lg:grid-cols-6 gap-6"}>
         {/* Gauge Widget (Chart 104) */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm flex flex-col justify-between items-center relative">
           <div className="w-full flex items-center justify-between text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1 pb-2 border-b border-slate-100">

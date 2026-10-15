@@ -597,10 +597,10 @@ export const MonthlyTrendsSection: React.FC<MonthlyTrendsSectionProps> = ({
               </span>
             )}
           </div>
-          <div className="w-full h-[230px]">
+          <div className="w-full h-[230px] min-h-[230px] relative">
             <ReactECharts
               option={chart110Option}
-              style={{ height: '100%', width: '100%' }}
+              style={{ height: '230px', width: '100%' }}
               onEvents={{ click: handleChart110Click }}
               isPdfExportMode={isPdfExportMode}
             />
@@ -624,10 +624,10 @@ export const MonthlyTrendsSection: React.FC<MonthlyTrendsSectionProps> = ({
               </span>
             )}
           </div>
-          <div className="w-full h-[230px]">
+          <div className="w-full h-[230px] min-h-[230px] relative">
             <ReactECharts
               option={chart111Option}
-              style={{ height: '100%', width: '100%' }}
+              style={{ height: '230px', width: '100%' }}
               onEvents={{ click: handleChart111Click }}
               isPdfExportMode={isPdfExportMode}
             />

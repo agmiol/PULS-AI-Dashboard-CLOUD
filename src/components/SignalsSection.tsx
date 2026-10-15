@@ -749,7 +749,7 @@ export const SignalsSection: React.FC<SignalsSectionProps> = ({
         )}
 
         {/* 📱 Mobile / Responsive Accordion Cards View */}
-        <div className={forceMobileLayout ? "block space-y-3" : "block lg:hidden space-y-3"}>
+        <div className={isPdfExportMode ? "hidden" : forceMobileLayout ? "block space-y-3" : "block lg:hidden space-y-3"}>
           {filteredSignals.length === 0 ? (
             <div className="py-8 text-center text-slate-400 font-medium text-xs">
               За обраний період нових вперше зафіксованих сигналів не виявлено
@@ -895,7 +895,7 @@ export const SignalsSection: React.FC<SignalsSectionProps> = ({
         </div>
 
         {/* 💻 Desktop Table View */}
-        <div className={forceMobileLayout ? "hidden" : "hidden lg:block overflow-x-auto"}>
+        <div className={isPdfExportMode ? "block overflow-x-auto" : forceMobileLayout ? "hidden" : "hidden lg:block overflow-x-auto"}>
           <table className="w-full text-left text-xs text-slate-700 border-collapse">
             <thead>
               <tr className="border-b border-slate-100 bg-white text-slate-400 text-[10px] uppercase font-bold sticky top-0">
