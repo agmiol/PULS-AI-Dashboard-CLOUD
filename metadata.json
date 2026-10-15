@@ -1,0 +1,6 @@
+{
+  "name": "PULS Business Feedback Dashboard",
+  "description": "Інтерактивний дашборд Пульс з двосторонньою кросс-фільтрацією, реальними графіками та авто-оновленням з PostgreSQL",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
