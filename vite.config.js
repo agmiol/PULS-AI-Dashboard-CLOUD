@@ -6,21 +6,33 @@ import { defineConfig } from 'vite';
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
+
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
     },
+
     server: {
-      host: true,
-      allowedHosts: true,
+      host: '127.0.0.1',
+
+      allowedHosts: [
+        'internal-dashboard.pulse.gov.ua',
+      ],
+
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
+
     preview: {
-      host: true,
-      allowedHosts: true,
+      host: '127.0.0.1',
+
+      allowedHosts: [
+        'internal-dashboard.pulse.gov.ua',
+      ],
+
       port: 3000,
+      strictPort: true,
     },
   };
 });
