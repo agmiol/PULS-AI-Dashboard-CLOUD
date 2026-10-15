@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import fs from 'fs';
 import express from "express";
 import path from "path";
 import helmet from "helmet";
@@ -83,9 +84,15 @@ async function startServer() {
   expressApp.post("/api/db-config", (req, res) => defaultDashboardController.updateDbConfig(req, res));
 
   // 5. Vite middleware for dev or static serving for production
-  if (process.env.NODE_ENV !== "production") {
+  const distIndexExists = fs.existsSync(path.join(process.cwd(), "dist/index.html"));
+  const isProduction = process.env.NODE_ENV === "production" || distIndexExists;
+
+  if (!isProduction) {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { 
+        middlewareMode: true,
+        allowedHosts: true
+      },
       appType: "spa",
     });
     expressApp.use(vite.middlewares);

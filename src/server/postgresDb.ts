@@ -41,8 +41,8 @@ export function loadActiveDbConfig(): DbConfig {
   }
 
   const rawUser = fileConfig.user || process.env.POSTGRES_USER || process.env.DB_USER || 'ai_readonly';
-  const rawHost = fileConfig.host || process.env.POSTGRES_HOST || process.env.DB_HOST || 'della-proportions.tun.ply.gg';
-  const rawDatabase = fileConfig.database || process.env.POSTGRES_DB || process.env.DB_NAME || 'PULS_COPY';
+  const rawHost = fileConfig.host || process.env.POSTGRES_HOST || process.env.DB_HOST || '127.0.0.1';
+  const rawDatabase = fileConfig.database || process.env.POSTGRES_DB || process.env.DB_NAME || 'PULS_2.0';
 
   return {
     user: String(rawUser).trim(),
@@ -50,7 +50,7 @@ export function loadActiveDbConfig(): DbConfig {
       ? fileConfig.password 
       : (process.env.POSTGRES_PASSWORD !== undefined ? process.env.POSTGRES_PASSWORD : (process.env.DB_PASSWORD || '#!264dfa330dDD17ga9%$')),
     host: String(rawHost).trim(),
-    port: fileConfig.port ? Number(fileConfig.port) : parseInt(process.env.POSTGRES_PORT || process.env.DB_PORT || '37079', 10),
+    port: fileConfig.port ? Number(fileConfig.port) : parseInt(process.env.POSTGRES_PORT || process.env.DB_PORT || '5432', 10),
     database: String(rawDatabase).trim(),
     ssl: fileConfig.ssl !== undefined 
       ? Boolean(fileConfig.ssl) 
