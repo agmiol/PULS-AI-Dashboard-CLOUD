@@ -2,6 +2,7 @@ import React from 'react';
 import { Users, User, Building2, RotateCcw, MapPin, X } from 'lucide-react';
 import { DashboardFilters, MonthlyCommentPoint, RegionMapPoint } from '../types';
 import { RegionMultiSelectDropdown } from './RegionMultiSelectDropdown';
+import { MonthMultiSelectDropdown } from './MonthMultiSelectDropdown';
 
 interface TopFilterBarProps {
   filters: DashboardFilters;
@@ -16,7 +17,9 @@ interface TopFilterBarProps {
 
 export const TopFilterBar: React.FC<TopFilterBarProps> = ({
   filters,
+  monthlyComments = [],
   regionsMap,
+  onSelectMonth,
   onSelectPersontype,
   onSelectRegion,
   onUpdateFilters,
@@ -24,15 +27,17 @@ export const TopFilterBar: React.FC<TopFilterBarProps> = ({
 }) => {
   const currentPersonType = filters.persontype || 'all';
   const currentRegion = filters.region || 'all';
+  const currentMonth = filters.month || 'all';
   const hasHromada = !!filters.selectedHromada;
 
-  const hasActiveFilters = currentPersonType !== 'all' || currentRegion !== 'all' || hasHromada;
+  const hasActiveFilters = currentPersonType !== 'all' || currentRegion !== 'all' || currentMonth !== 'all' || hasHromada;
 
   const handleResetFilters = () => {
     onUpdateFilters({
       ...filters,
       persontype: 'all',
       region: 'all',
+      month: 'all',
       selectedHromada: null,
       selectedHromadaName: null
     });
@@ -96,13 +101,25 @@ export const TopFilterBar: React.FC<TopFilterBarProps> = ({
           </div>
         </div>
 
-        {/* Область & Hromada Chip */}
-        <div className="flex-1 w-full flex items-center gap-2">
-          <div className="flex-1 min-w-0">
+        {/* Область, Період & Hromada Chip */}
+        <div className="flex-1 sm:flex-[2] w-full flex flex-col sm:flex-row items-center gap-2">
+          {/* Вибір області */}
+          <div className="flex-1 w-full min-w-0">
             <RegionMultiSelectDropdown
               regionsMap={regionsMap}
               selectedRegion={currentRegion}
               onSelectRegion={onSelectRegion}
+              compact={false}
+              className="w-full"
+            />
+          </div>
+
+          {/* Вибір періоду (місяці / квартали / інтервал) - справа від "Всі області" */}
+          <div className="flex-1 w-full min-w-0">
+            <MonthMultiSelectDropdown
+              monthlyComments={monthlyComments}
+              selectedMonth={filters.month}
+              onSelectMonth={(m) => onSelectMonth?.(m)}
               compact={false}
               className="w-full"
             />
