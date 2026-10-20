@@ -572,7 +572,6 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
                             {/* Complete Mechanism Description */}
                             {child.mechanism && (
                               <div className="text-sm text-slate-900 leading-relaxed font-medium bg-slate-50 p-2.5 rounded-lg border border-slate-200/80 break-words whitespace-normal">
-                                <strong className="text-slate-950 font-bold">Опис деталізованого механізму: </strong>
                                 {child.mechanism}
                               </div>
                             )}
@@ -1419,8 +1418,8 @@ export const FullTablesSection: React.FC<FullTablesSectionProps> = ({
 
                                             {renderCategoryBadges(child.scopeTags)}
 
-                                            <div className="text-xs text-slate-600 leading-relaxed font-normal print:text-slate-800">
-                                              Механізм: <span className="text-slate-800 font-medium">{child.mechanism}</span>
+                                            <div className="text-xs text-slate-800 font-medium leading-relaxed print:text-slate-800">
+                                              {child.mechanism}
                                             </div>
                                           </div>
                                         </div>

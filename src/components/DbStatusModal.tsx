@@ -224,14 +224,14 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
               <div className="space-y-1 w-full">
                 <div className="font-bold text-sm">
                   {dbInfo?.connected
-                    ? 'Успішно підключено до бази даних PULS_COPY'
+                    ? `Успішно підключено до бази даних ${database}`
                     : 'Очікування доступу до бази даних (pg_hba.conf)'}
                 </div>
-                <p className="text-xs opacity-90 leading-relaxed">
-                  {dbInfo?.connected
-                    ? `Пряме з'єднання з базою через playit.gg тунель. Розрахунки виконуються в реальному часі (${(dbInfo.totalFeedbackRows || 0).toLocaleString()} записів).`
-                    : 'Потрібно дозволити підключення для вашої IP-адреси у конфігураційному файлі pg_hba.conf на сервері PostgreSQL.'}
-                </p>
+                {!dbInfo?.connected && (
+                  <p className="text-xs opacity-90 leading-relaxed">
+                    Потрібно дозволити підключення для вашої IP-адреси у конфігураційному файлі pg_hba.conf на сервері PostgreSQL.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -260,7 +260,7 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
                 </span>
               </div>
               <div className="font-mono text-xs font-semibold text-slate-800 bg-white p-2.5 rounded-lg border border-slate-200 break-all select-all shadow-inner">
-                {dbInfo?.dbUrl || 'postgresql://ai_readonly:***@della-proportions.tun.ply.gg:37079/PULS_COPY'}
+                {dbInfo?.dbUrl || `postgresql://${user}:***@${host}:${port}/${database}`}
               </div>
             </div>
 
@@ -304,28 +304,25 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
         {/* Tab 2: Config / Tunnel Editor */}
         {activeTab === 'config' && (
           <form onSubmit={handleSaveConfig} className="p-5 space-y-4 text-xs overflow-y-auto max-h-[70vh]">
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 space-y-1">
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900">
               <div className="font-bold flex items-center gap-1.5 text-xs text-amber-950">
                 <KeyRound className="w-4 h-4 text-amber-700 shrink-0" />
-                <span>Автономне керування параметрами середовища (Environment Overrides)</span>
+                <span>Автономне керування параметрами середовища</span>
               </div>
-              <p className="text-[11px] leading-relaxed text-amber-800">
-                Тут ви можете у будь-який момент самостійно змінити адреси playit.gg тунелю, порти та доступи. Параметри зберігаються в конфігурацію сервера і задіюються негайно без перепідключення всієї сесії AI Studio.
-              </p>
             </div>
 
             {/* Quick Preset Button */}
             <div className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
               <div className="flex items-center gap-2 text-slate-700 font-semibold">
                 <Globe className="w-4 h-4 text-sky-600" />
-                <span>Актуальний тунель розробки:</span>
+                <span>Тунель розробки:</span>
               </div>
               <button
                 type="button"
                 onClick={handleApplyPreset}
                 className="px-3 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold border border-sky-300 transition-all text-[11px] cursor-pointer"
               >
-                Вставити della-proportions.tun.ply.gg:37079
+                Вставити значення за замовчуванням
               </button>
             </div>
 
