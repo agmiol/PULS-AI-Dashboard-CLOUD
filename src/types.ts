@@ -237,6 +237,7 @@ export interface DashboardData {
   dbInfo: {
     connected: boolean;
     dbUrl: string;
+    databaseName?: string;
     mode: 'google_sheets' | 'postgresql' | 'mock_simulation';
     totalFeedbackRows: number;
     lastRefreshed: string;

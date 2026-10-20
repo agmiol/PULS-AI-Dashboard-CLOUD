@@ -759,7 +759,7 @@ export const UkraineMap: React.FC<UkraineMapProps> = ({
           color: ['#f1f5f9', '#dcfce7', '#a7f3d0', '#2dd4bf', '#14b8a6', '#0d9488', '#047857']
         },
         outOfRange: {
-          color: '#f59e0b'
+          color: '#0284c7'
         },
         textStyle: { color: '#475569', fontSize: 10, fontWeight: 'bold' }
       } : mapMetric === 'avgScore' ? {
@@ -777,7 +777,7 @@ export const UkraineMap: React.FC<UkraineMapProps> = ({
           color: avgScoreColorStops
         },
         outOfRange: {
-          color: '#f59e0b'
+          color: '#0284c7'
         },
         textStyle: { color: '#475569', fontSize: 10, fontWeight: 'bold' }
       } : {
@@ -795,7 +795,7 @@ export const UkraineMap: React.FC<UkraineMapProps> = ({
           color: npsBalanceColorStops
         },
         outOfRange: {
-          color: '#f59e0b'
+          color: '#0284c7'
         },
         textStyle: { color: '#475569', fontSize: 10, fontWeight: 'bold' }
       },

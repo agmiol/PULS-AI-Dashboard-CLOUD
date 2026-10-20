@@ -24,13 +24,15 @@ interface CommentInspectorModalProps {
   totalCount?: number;
   filters: DashboardFilters;
   isMobileSimulator?: boolean;
+  databaseName?: string;
 }
 
 export const CommentInspectorModal: React.FC<CommentInspectorModalProps> = ({
   isOpen,
   onClose,
   filters,
-  isMobileSimulator = false
+  isMobileSimulator = false,
+  databaseName
 }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [activeSearch, setActiveSearch] = useState<string>('');
@@ -135,7 +137,7 @@ export const CommentInspectorModal: React.FC<CommentInspectorModalProps> = ({
                   </span>
                 </div>
                 <h2 className="text-sm sm:text-lg font-extrabold text-white mt-1 leading-snug break-words">
-                  Повний реєстр текстових коментарів (`feedback_e`)
+                  Повний реєстр текстових коментарів
                 </h2>
                 <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5 line-clamp-1">
                   Прямий доступ та повнотекстовий пошук по всіх відгуках із врахуванням активних крос-фільтрів
@@ -322,7 +324,7 @@ export const CommentInspectorModal: React.FC<CommentInspectorModalProps> = ({
         <div className="p-2.5 sm:p-3.5 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2.5 shrink-0">
           <div className="flex items-center justify-between w-full sm:w-auto gap-2">
             <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium truncate">
-              Джерело: таблиця <code className="text-blue-700 font-mono">feedback_e</code> (PULS_COPY)
+              Джерело: база даних <code className="text-blue-700 font-mono font-bold">{databaseName || 'PULS_COPY'}</code>
             </span>
 
             {/* Pagination Controls */}

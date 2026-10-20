@@ -17,6 +17,7 @@ interface IssueCommentsModalProps {
   existingComments?: FeedbackComment[];
   filters?: DashboardFilters;
   isMobileSimulator?: boolean;
+  databaseName?: string;
 }
 
 const REGIONS = [
@@ -101,7 +102,8 @@ export const IssueCommentsModal: React.FC<IssueCommentsModalProps> = ({
   targetIssue,
   existingComments = [],
   filters,
-  isMobileSimulator = false
+  isMobileSimulator = false,
+  databaseName
 }) => {
   const [fetchedComments, setFetchedComments] = useState<FeedbackComment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -436,7 +438,7 @@ export const IssueCommentsModal: React.FC<IssueCommentsModalProps> = ({
         <div className="p-2.5 sm:p-3 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2.5 shrink-0">
           <div className="flex items-center justify-between w-full sm:w-auto gap-2">
             <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium truncate">
-              Джерело: <code className="text-blue-700 font-mono">feedback_e</code>
+              Джерело: база даних <code className="text-blue-700 font-mono font-bold">{databaseName || 'PULS_COPY'}</code>
             </span>
 
             {/* Pagination Controls */}

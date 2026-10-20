@@ -11,8 +11,6 @@ import { CommentInspectorModal } from './components/CommentInspectorModal';
 import { DbStatusModal } from './components/DbStatusModal';
 import { IssueCommentsModal, TargetIssueForComments } from './components/IssueCommentsModal';
 import { PdfExportModal, PdfExportOptions } from './components/PdfExportModal';
-import { MobileViewSwitcher, MobileViewMode } from './components/MobileViewSwitcher';
-import { MobileDeviceFrame } from './components/MobileDeviceFrame';
 import { LoginScreen } from './components/LoginScreen';
 import { DashboardData, DashboardFilters } from './types';
 import { Loader2, AlertTriangle, RefreshCw, CheckCircle2, Download, X } from 'lucide-react';
@@ -39,7 +37,6 @@ export default function App() {
     hasCommentOnly: false
   });
 
-  const [mobileMode, setMobileMode] = useState<MobileViewMode>('desktop');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [refreshInterval, setRefreshInterval] = useState<number>(0); // 0 = Off default
@@ -257,9 +254,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans selection:bg-sky-500 selection:text-white">
-      {/* Interactive Mobile Viewport / Adaptive Layout Switcher Bar */}
-      <MobileViewSwitcher mode={mobileMode} onChangeMode={setMobileMode} />
-
       {/* Top Header & Cross-Filter Bar */}
       <Header
         data={data}
@@ -369,119 +363,15 @@ export default function App() {
           </div>
         ) : data ? (
           <>
-            {/* Mode: Adaptive Frame Simulator (only when not exporting PDF) */}
-            {mobileMode === 'mobile-responsive' && !isExportingPdf && (
-              <MobileDeviceFrame>
-                <div className="p-3 space-y-4">
-                  <TopFilterBar
-                    filters={filters}
-                    monthlyComments={data.monthlyComments}
-                    regionsMap={data.regionsMap}
-                    onSelectMonth={handleSelectMonth}
-                    onSelectPersontype={handleSelectPersontype}
-                    onSelectRegion={handleSelectRegion}
-                    onUpdateFilters={handleUpdateFilters}
-                    forceMobileLayout={true}
-                  />
-
-                  <TopKpiSection
-                    kpis={data.kpis}
-                    monthlyScores={data.monthlyScores}
-                    forceMobileLayout={true}
-                    selectedCategory={filters.scoreCategory !== 'all' ? filters.scoreCategory : undefined}
-                    selectedPersontype={filters.persontype !== 'all' ? filters.persontype : undefined}
-                    selectedHasCommentOnly={filters.hasCommentOnly}
-                    onSelectCategory={handleSelectCategory}
-                    onSelectLegalForm={handleSelectPersontype}
-                    onToggleHasCommentOnly={handleToggleHasCommentOnly}
-                  />
-
-                  <MonthlyTrendsSection
-                    monthlyScores={data.monthlyScores}
-                    monthlyDistribution={data.monthlyDistribution}
-                    selectedMonth={filters.month !== 'all' ? filters.month : undefined}
-                    forceMobileLayout={true}
-                    onSelectMonth={handleSelectMonth}
-                    onSelectCategory={handleSelectCategory}
-                  />
-
-                  <RegionalDemographicsSection
-                    regionsMap={data.regionsMap}
-                    hromadaStats={data.hromadaStats}
-                    monthlyComments={data.monthlyComments}
-                    legalFormDistribution={data.legalFormDistribution}
-                    selectedRegion={filters.region !== 'all' ? filters.region : undefined}
-                    selectedHromada={filters.selectedHromada || undefined}
-                    selectedMonth={filters.month !== 'all' ? filters.month : undefined}
-                    selectedPersontype={filters.persontype !== 'all' ? filters.persontype : undefined}
-                    forceMobileLayout={true}
-                    filters={filters}
-                    onSelectRegion={handleSelectRegion}
-                    onSelectHromada={handleSelectHromada}
-                    onGranularityChange={handleGranularityChange}
-                    onSelectMonth={handleSelectMonth}
-                    onSelectPersontype={handleSelectPersontype}
-                  />
-
-                  <SignalsSection
-                    newSignals={data.newSignals}
-                    growingIssues={data.growingIssues}
-                    decliningIssues={data.decliningIssues}
-                    selectedGeneralIssueId={filters.generalIssueId}
-                    selectedDetailedIssueId={filters.detailedIssueId}
-                    filters={filters}
-                    forceMobileLayout={true}
-                    onSelectGeneralIssue={handleSelectGeneralIssue}
-                    onSelectDetailedIssue={handleSelectDetailedIssue}
-                    onOpenCommentsForIssue={handleOpenIssueComments}
-                  />
-
-                  <FullTablesSection
-                    fullGeneralIssues={data.fullGeneralIssues}
-                    fullDetailedIssues={data.fullDetailedIssues}
-                    dashboardData={data}
-                    selectedGeneralIssueId={filters.generalIssueId}
-                    selectedDetailedIssueId={filters.detailedIssueId}
-                    filters={filters}
-                    onUpdateFilters={(newFilters) => setFilters(newFilters)}
-                    forceMobileLayout={true}
-                    onSelectGeneralIssue={handleSelectGeneralIssue}
-                    onSelectDetailedIssue={handleSelectDetailedIssue}
-                    onOpenCommentsForIssue={handleOpenIssueComments}
-                  />
-                </div>
-
-                {/* Issue Specific Comments Modal (Inside Phone Frame) */}
-                <IssueCommentsModal
-                  isOpen={isIssueCommentsModalOpen}
-                  onClose={() => setIsIssueCommentsModalOpen(false)}
-                  targetIssue={targetIssueForComments}
-                  existingComments={data.sampleComments || []}
-                  filters={filters}
-                  isMobileSimulator={true}
-                />
-
-                {/* Full Database Comment Inspector (Inside Phone Frame) */}
-                <CommentInspectorModal
-                  isOpen={isInspectorOpen}
-                  onClose={() => setIsInspectorOpen(false)}
-                  filters={filters}
-                  isMobileSimulator={true}
-                />
-              </MobileDeviceFrame>
-            )}
-
-            {/* Mode 0 (Desktop Layout, Always Active for PDF Export) */}
-            {(mobileMode === 'desktop' || isExportingPdf) && (
-              <div
-                id="pdf-export-container"
-                className={
-                  isExportingPdf
-                    ? "w-[1440px] min-w-[1440px] max-w-[1440px] space-y-6 bg-white p-0 m-0 border-0 shadow-none rounded-none outline-none overflow-visible"
-                    : "space-y-6 bg-slate-50/50 p-2 sm:p-4 rounded-2xl"
-                }
-                style={isExportingPdf ? { width: '1440px', minWidth: '1440px', maxWidth: '1440px' } : undefined}
-              >
+            <div
+              id="pdf-export-container"
+              className={
+                isExportingPdf
+                  ? "w-[1440px] min-w-[1440px] max-w-[1440px] space-y-6 bg-white p-0 m-0 border-0 shadow-none rounded-none outline-none overflow-visible"
+                  : "space-y-6 bg-slate-50/50 p-2 sm:p-4 rounded-2xl"
+              }
+              style={isExportingPdf ? { width: '1440px', minWidth: '1440px', maxWidth: '1440px' } : undefined}
+            >
                 {isExportingPdf ? (
                   <>
                     {/* ========================================================================= */}
@@ -740,7 +630,6 @@ export default function App() {
                   </>
                 )}
               </div>
-            )}
           </>
         ) : null}
       </main>
@@ -763,27 +652,25 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Issue Specific Comments Modal (Desktop / Native Responsive Mode) */}
-      {mobileMode === 'desktop' && (
-        <IssueCommentsModal
-          isOpen={isIssueCommentsModalOpen}
-          onClose={() => setIsIssueCommentsModalOpen(false)}
-          targetIssue={targetIssueForComments}
-          existingComments={data?.sampleComments || []}
-          filters={filters}
-          isMobileSimulator={false}
-        />
-      )}
+      {/* Issue Specific Comments Modal */}
+      <IssueCommentsModal
+        isOpen={isIssueCommentsModalOpen}
+        onClose={() => setIsIssueCommentsModalOpen(false)}
+        targetIssue={targetIssueForComments}
+        existingComments={data?.sampleComments || []}
+        filters={filters}
+        isMobileSimulator={false}
+        databaseName={data?.dbInfo?.databaseName}
+      />
 
-      {/* Comment Inspector Modal (Desktop Mode) */}
-      {mobileMode === 'desktop' && (
-        <CommentInspectorModal
-          isOpen={isInspectorOpen}
-          onClose={() => setIsInspectorOpen(false)}
-          filters={filters}
-          isMobileSimulator={false}
-        />
-      )}
+      {/* Comment Inspector Modal */}
+      <CommentInspectorModal
+        isOpen={isInspectorOpen}
+        onClose={() => setIsInspectorOpen(false)}
+        filters={filters}
+        isMobileSimulator={false}
+        databaseName={data?.dbInfo?.databaseName}
+      />
 
       {/* Database Status Modal */}
       <DbStatusModal

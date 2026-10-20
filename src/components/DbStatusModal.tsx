@@ -78,7 +78,7 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
     setSsl(false);
     setStatusMessage({
       type: 'info',
-      text: 'Встановлено параметри тунелю playit.gg (della-proportions.tun.ply.gg:37079). Існуючий пароль на сервері збережеться без змін.'
+      text: 'Встановлено параметри за замовчуванням. Існуючий пароль на сервері збережеться без змін.'
     });
   };
 
@@ -126,7 +126,7 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
       console.error('[DbStatusModal] Save error:', err);
       setStatusMessage({
         type: 'error',
-        text: err.message || 'Помилка підключення до нового тунелю'
+        text: err.message || 'Помилка підключення до сервера бази даних'
       });
     } finally {
       setSaving(false);
@@ -150,9 +150,6 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
                   {database}
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
-                Оновлення параметрів playit.gg тунелю та джерела даних у реальному часі
-              </p>
             </div>
           </div>
           <button
@@ -187,7 +184,7 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
             }`}
           >
             <Settings className="w-4 h-4 text-amber-600" />
-            <span>Налаштування тунелю (Host / Port / Env)</span>
+            <span>Налаштування доступу</span>
           </button>
         </div>
 
@@ -256,7 +253,7 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
                   <span>Поточна URL-адреса підключення:</span>
                 </div>
                 <span className="font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[11px]">
-                  {dbInfo?.mode === 'postgresql' ? 'PostgreSQL Tunnel' : 'In-Memory Cache'}
+                  {dbInfo?.mode === 'postgresql' ? 'PostgreSQL' : 'In-Memory Cache'}
                 </span>
               </div>
               <div className="font-mono text-xs font-semibold text-slate-800 bg-white p-2.5 rounded-lg border border-slate-200 break-all select-all shadow-inner">
@@ -274,27 +271,27 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
                   <span className="font-semibold text-slate-700">`feedback_e`</span>
-                  <span className="font-black text-slate-900">{dbInfo?.tables.feedback_e?.toLocaleString() || '622,361'}</span>
+                  <span className="font-black text-slate-900">{(dbInfo?.tables.feedback_e ?? 0).toLocaleString('uk-UA')}</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
                   <span className="font-semibold text-slate-700">`general_issues`</span>
-                  <span className="font-black text-slate-900">{dbInfo?.tables.general_issues?.toLocaleString() || '30'}</span>
+                  <span className="font-black text-slate-900">{(dbInfo?.tables.general_issues ?? 0).toLocaleString('uk-UA')}</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
                   <span className="font-semibold text-slate-700">`detailed_issues`</span>
-                  <span className="font-black text-slate-900">{dbInfo?.tables.detailed_issues?.toLocaleString() || '330'}</span>
+                  <span className="font-black text-slate-900">{(dbInfo?.tables.detailed_issues ?? 0).toLocaleString('uk-UA')}</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
                   <span className="font-semibold text-slate-700">`general_issue_comment`</span>
-                  <span className="font-black text-slate-900">{dbInfo?.tables.general_issue_comment?.toLocaleString() || '25,373'}</span>
+                  <span className="font-black text-slate-900">{(dbInfo?.tables.general_issue_comment ?? 0).toLocaleString('uk-UA')}</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
                   <span className="font-semibold text-slate-700">`detailed_issue_comment`</span>
-                  <span className="font-black text-slate-900">{dbInfo?.tables.detailed_issue_comment?.toLocaleString() || '11,495'}</span>
+                  <span className="font-black text-slate-900">{(dbInfo?.tables.detailed_issue_comment ?? 0).toLocaleString('uk-UA')}</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
                   <span className="font-semibold text-slate-700">`regions`</span>
-                  <span className="font-black text-slate-900">{dbInfo?.tables.regions?.toLocaleString() || '50'}</span>
+                  <span className="font-black text-slate-900">{(dbInfo?.tables.regions ?? 0).toLocaleString('uk-UA')}</span>
                 </div>
               </div>
             </div>
@@ -315,7 +312,7 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
             <div className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
               <div className="flex items-center gap-2 text-slate-700 font-semibold">
                 <Globe className="w-4 h-4 text-sky-600" />
-                <span>Тунель розробки:</span>
+                <span>Швидкі параметри:</span>
               </div>
               <button
                 type="button"
@@ -330,7 +327,7 @@ export const DbStatusModal: React.FC<DbStatusModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">
-                  Хост (DB Host / Tunnel Address):
+                  Хост (DB Host / Address):
                 </label>
                 <input
                   type="text"

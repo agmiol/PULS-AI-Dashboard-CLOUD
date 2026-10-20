@@ -73,17 +73,24 @@ export function getActiveDbConfig(): Omit<DbConfig, 'password'> & { hasPassword:
 }
 
 export function createPgPool(config: DbConfig): Pool {
-  return new Pool({
+  const pool = new Pool({
     user: config.user,
     password: config.password,
     host: config.host,
     port: config.port,
     database: config.database,
     ssl: config.ssl ? { rejectUnauthorized: false } : false,
-    connectionTimeoutMillis: 10000,
+    connectionTimeoutMillis: 8000,
+    statement_timeout: 15000,
     max: 15,
     idleTimeoutMillis: 30000,
   });
+
+  pool.on('error', (err) => {
+    console.warn('[PostgreSQL Pool Background Warning]:', err?.message || err);
+  });
+
+  return pool;
 }
 
 export let pgPool = createPgPool(activeConfig);
@@ -111,15 +118,15 @@ export function formatPgError(err: any): string {
       `Сервер PostgreSQL на вашому ПК відхилив підключення з IP "${ip}" для користувача "${activeConfig.user}" до бази "${activeConfig.database}".\n\n` +
       `Кроки для вирішення на вашому ПК/сервері PostgreSQL:\n` +
       `1. Відкрийте файл pg_hba.conf (наприклад, C:\\Program Files\\PostgreSQL\\16\\data\\pg_hba.conf або /etc/postgresql/16/main/pg_hba.conf).\n` +
-      `2. Додайте новий рядок дозволу для тунелю:\n` +
+      `2. Додайте новий рядок дозволу для підключення:\n` +
       `   host    ${activeConfig.database}    ${activeConfig.user}    all    scram-sha-256\n` +
-      `   (або замініть scram-sha-256 на md5 або trust залежно від вашого зв'язку)\n` +
+      `   (або замініть scram-sha-256 на md5 або trust залежно від налаштувань)\n` +
       `3. Оновіть конфігурацію PostgreSQL без перезапуску сервісу, виконавши у pgAdmin / psql:\n` +
       `   SELECT pg_reload_conf();`;
   }
 
   if (errMsg.includes('password authentication failed') || errMsg.includes('пароль')) {
-    return `Помилка автентифікації PostgreSQL: Невірний пароль для користувача "${activeConfig.user}". Будь ласка, перевірте пароль у налаштуваннях тунелю.`;
+    return `Помилка автентифікації PostgreSQL: Невірний пароль для користувача "${activeConfig.user}". Будь ласка, перевірте пароль у налаштуваннях доступу.`;
   }
 
   if (errMsg.includes('does not support SSL') || errMsg.includes('SSL connections')) {
@@ -130,8 +137,20 @@ export function formatPgError(err: any): string {
     return `Сервер PostgreSQL вимагає шифрування SSL. Спробуйте увімкнути галочку SSL у налаштуваннях.`;
   }
 
-  if (errMsg.includes('ETIMEDOUT') || errMsg.includes('ECONNREFUSED') || errMsg.includes('ENOTFOUND')) {
-    return `Помилка мережі (playit.gg тунель): Не вдалося встановити TCP-з'єднання з хостом ${activeConfig.host}:${activeConfig.port}. Перевірте, чи запущено агент playit.gg на вашому ПК.`;
+  if (
+    errMsg.includes('ETIMEDOUT') ||
+    errMsg.includes('ECONNREFUSED') ||
+    errMsg.includes('ENOTFOUND') ||
+    errMsg.includes('timeout') ||
+    errMsg.includes('Connection terminated') ||
+    errMsg.includes('terminated due to connection timeout')
+  ) {
+    return `Помилка мережі / таймаут підключення до сервера PostgreSQL:\n` +
+      `Не вдалося встановити або зберегти TCP-з'єднання з хостом ${activeConfig.host}:${activeConfig.port} (Таймаут підключення).\n\n` +
+      `Кроки для перевірки:\n` +
+      `1. Перевірте, чи запущено сервер PostgreSQL або мережевий агент/тунель на хості ${activeConfig.host}:${activeConfig.port}.\n` +
+      `2. Перевірте доступність порту ${activeConfig.port} та мережевий брандмауер (Firewall).\n` +
+      `3. Оновіть адреси та параметри у вкладці «Налаштування доступу» у верхньому меню.`;
   }
 
   return errMsg;
@@ -1910,6 +1929,23 @@ export async function getDashboardDataFromPostgres(filters: DashboardFilters): P
       hromadaStats = await getHromadaStatsFromPostgres(filters, client);
     }
 
+    // Real count of linked comments for general and detailed issue linkage
+    let genIssueCommCount = 0;
+    let detIssueCommCount = 0;
+    try {
+      const gRes = await client.query("SELECT COUNT(*)::int AS count FROM feedback_e WHERE general_issue_id IS NOT NULL AND array_length(general_issue_id, 1) > 0;");
+      genIssueCommCount = gRes.rows[0]?.count || 0;
+    } catch (_) {
+      genIssueCommCount = 0;
+    }
+
+    try {
+      const dRes = await client.query("SELECT COUNT(*)::int AS count FROM feedback_e WHERE detailed_issue_id IS NOT NULL AND array_length(detailed_issue_id, 1) > 0;");
+      detIssueCommCount = dRes.rows[0]?.count || 0;
+    } catch (_) {
+      detIssueCommCount = 0;
+    }
+
     return {
       kpis,
       monthlyScores,
@@ -1928,6 +1964,7 @@ export async function getDashboardDataFromPostgres(filters: DashboardFilters): P
       dbInfo: {
         connected: true,
         dbUrl: getActiveDbConfig().maskedUrl,
+        databaseName: activeConfig.database,
         mode: "postgresql",
         totalFeedbackRows: totalScores,
         lastRefreshed: new Date().toISOString(),
@@ -1935,8 +1972,8 @@ export async function getDashboardDataFromPostgres(filters: DashboardFilters): P
           feedback_e: totalScores,
           general_issues: fullGeneralIssues.length,
           detailed_issues: fullDetailedIssues.length,
-          general_issue_comment: 0,
-          detailed_issue_comment: 0,
+          general_issue_comment: genIssueCommCount,
+          detailed_issue_comment: detIssueCommCount,
           regions: regionsMap.length
         }
       }
